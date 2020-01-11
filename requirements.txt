@@ -1,0 +1,10 @@
+speechrecognition
+pocketsphinx
+--upgrade pyyaml
+chatterbot-corpus
+chatterbot
+gTTS
+playsound
+pyttsx3
+face_recognition
+opencv-python

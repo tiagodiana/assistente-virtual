@@ -1,0 +1,2 @@
+pacman -S espeak espeakup alsa-utils cmake
+systemctl enable espeakup.service
