@@ -45,9 +45,15 @@ r = sr.Recognizer()
 
 fim = None
 response = None
-print(reconhecimento_facial())
-if reconhecimento_facial() == "Tiago":
-    cria_audio('Bem vindo senho Tiago')
+
+if reconhecimento_facial() ==  None:
+    cria_audio(f"Rosto desconhecido")
+    cria_audio(f"Encerrando o Sistema")
+    sys.exit()
+
+else:
+    nome = reconhecimento_facial()
+    cria_audio("Bem vindo " + nome)
     cria_audio('No que posso ajudar?')
     while True:
         with sr.Microphone() as s:
@@ -73,5 +79,4 @@ if reconhecimento_facial() == "Tiago":
         cria_audio(str(response))
         if fim == 0:
             sys.exit()
-else:
-    sys.exit()
+
