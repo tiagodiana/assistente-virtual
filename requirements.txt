@@ -1,6 +1,5 @@
 speechrecognition
 pocketsphinx
---upgrade pyyaml
 chatterbot-corpus
 chatterbot
 gTTS
