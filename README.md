@@ -1,2 +1,11 @@
-# assistente-virtual
-Assistente pessoal feito em python (em construção)
+# Assistente Virtual
+<h2>Assistente Virtual feito em python (em construção)<h2>
+  <h3>Sistema sendo desenvolvido no ArchLinux, ainda não testado em outras plataformas</h3>'
+ <h3>Dependências</h3>
+ <ul>
+  <li># pacman -S espeak espeakup alsa-utils cmake</li>
+  <li># systemctl enable espeakup.service</li>
+  <li># pip install --upgrade pyyaml</li>
+  <li># pip install -r requirements.txt</li>
+ </ul>
+
