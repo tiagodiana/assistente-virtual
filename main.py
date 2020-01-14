@@ -25,40 +25,38 @@ class Main():
             self.cria_audio('No que posso ajudar?')
             while True:
                 with sr.Microphone() as s:
+                    self.r.adjust_for_ambient_noise(s)
                     try:
-                        self.r.adjust_for_ambient_noise(s)
-
-                        audio = self.r.listen(s)
-                        speech = self.r.recognize_google(audio, language='pt-BR')
-                        previsao = speech.find('previsão do tempo')
-                        noticias = speech.find('notícias')
-                        self.fim = speech.find('Ok obrigado')
-                        if previsao == 0:
-                            cidade = str(speech).split()[-1]
-                            self.cria_audio('Buscando previsão do tempo para ' + cidade)
-                            self.response = self.previsaoTempo(cidade)
-                        elif noticias == 0:
-                            self.cria_audio('Buscando as notícias')
-                            self.news()
-                        elif self.fim == 0:
-                            self.response = "De nada, quando precisar é só chamar"
-                        else:
-                            print('Você disse: ', speech)
-                            self.response = self.bot.get_response(speech)
-                            print('Bot: ', self.response)
-                                                
+                        self.audio = self.r.listen(s)
+                        self.speech = self.r.recognize_google(self.audio, language='pt-BR')
                     except EnvironmentError:
                         self.response = "Ainda não posso processar sua requisição"
                         print(EnvironmentError)
+                previsao = self.speech.find('previsão do tempo')
+                noticias = self.speech.find('notícias')
+                self.fim = self.speech.find('Ok obrigado')
+                if previsao == 0:
+                    cidade = str(self.speech).split()[-1]
+                    self.cria_audio('Buscando previsão do tempo para ' + cidade)
+                    self.response = self.previsaoTempo(cidade)
+                elif noticias == 0:
+                    self.cria_audio('Buscando as notícias')
+                    self.news()
+                elif self.fim == 0:
+                    self.response = "De nada, quando precisar é só chamar"
+                else:
+                    print('Você disse: ', self.speech)
+                    self.response = self.bot.get_response(self.speech)
+                    print('Bot: ', self.response)
+                
                 self.cria_audio(str(self.response))
                 if self.fim == 0:
                     sys.exit()
     def cria_audio(self,audio):
         if audio != '':
-            audio = audio
+            tts = gTTS(audio,lang='pt-br')
         else:
-            audio = 'Não posso responder isso ainda'
-        tts = gTTS(audio,lang='pt-br')
+            tts = gTTS('Não entendi o que você disse!',lang='pt-br')
         #Salva o arquivo de audio
         tts.save('audios/tmp.mp3')
         #Da play ao audio
@@ -69,9 +67,8 @@ class Main():
         try:
             url = 'https://api.hgbrasil.com/weather'
             key = '0418e7f0'
-            date = '17/01/2020'
             fields= "only_results,temp,city_name,forecast,max,min,date"
-            data = {'key':key,'date':date,'fields': fields,'city_name': cidade}
+            data = {'key':key,'fields': fields,'city_name': cidade}
             req = requests.get(url, data=data, timeout=3000)
             json = req.json()
             print(f"Cidade:{json['city_name']}")
@@ -93,11 +90,11 @@ class Main():
         json = req.json()
 
         for c in range(10):
-            self.cria_audio('Noticia ' +  str(c + 1))
+            self.cria_audio('Notícia ' +  str(c + 1))
             self.cria_audio(json['articles'][c]['title'])
             self.cria_audio(json['articles'][c]['description'])    
             if c == 9:
-                self.cria_audio('Fim das noticias')
+                self.cria_audio('Fim das noticias, deseja algo mais?')
 
 if __name__ == '__main__':
     inicio = Main()
