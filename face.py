@@ -16,14 +16,14 @@ import sys
 
 
 # Load a sample picture and learn how to recognize it.
-tiago_image = face_recognition.load_image_file("tiago.jpg")
-tiago_face_encoding = face_recognition.face_encodings(tiago_image)[0]
+image = face_recognition.load_image_file("tiago.jpg")
+face_encoding = face_recognition.face_encodings(image)[0]
 
 
 
 # Create arrays of known face encodings and their names
 known_face_encodings = [
-    tiago_face_encoding,
+    face_encoding,
 
 ]
 known_face_names = [
@@ -75,5 +75,3 @@ def reconhecimento_facial():
 
         face_names.append(name)
     cv2.destroyAllWindows()
-
-print(reconhecimento_facial())

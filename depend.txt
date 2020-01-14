@@ -1,2 +1,2 @@
-pacman -S espeak espeakup alsa-utils cmake
+pacman -S espeak espeakup alsa-utils cmake python-yaml
 systemctl enable espeakup.service
