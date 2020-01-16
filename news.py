@@ -10,6 +10,8 @@ url = ('https://newsapi.org/v2/top-headlines?'
 req = requests.get(url, timeout=3000)
 json = req.json()
 
-for c in range(5):
-    print(json['articles'][c]['title'])
-    print(json['articles'][c]['description'])
+for c in json:
+      if str(c).find('novela') == 0:
+             print('Noticia de novela achada!\n')
+    #print(json['articles'][c]['title'])
+    #print(json['articles'][c]['description'])
