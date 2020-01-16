@@ -15,7 +15,7 @@
      <li>Python 3.7</li>
      <ul><li>https://www.python.org/ftp/python/3.7.0/python-3.7.0-amd64.exe</li></ul>
      <li>PyAudio</li>
-     <ul><li>pip install PyAudio\PyAudio-0.2.11-cp37-cp37m-win_amd64.whl</li></ul>
+     <ul><li>https://www.lfd.uci.edu/~gohlke/pythonlibs/#pyaudio</li></ul>
      <li>Cmake</li>
      <ul><li>https://github.com/Kitware/CMake/releases/download/v3.16.2/cmake-3.16.2-win64-x64.msi</li></ul>
      <li>Swig</li>
