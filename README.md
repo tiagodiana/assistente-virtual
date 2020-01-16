@@ -20,6 +20,7 @@
      <ul><li>http://prdownloads.sourceforge.net/swig/swigwin-4.0.1.zip</li></ul>
      <li>Instalação dependcias via pip</li>
      <ul><li>python -m pip install -m requirements.txt</li></ul>
-     <li>Obs: O Caminho do Python, Cmake e Swig devem estar em sua variavel PATH</li>
+     <li><strong>Obs: O Caminho do Python, Cmake e Swig devem estar em sua variavel PATH</strong></li>
+   </ul>
  </ul>
 
