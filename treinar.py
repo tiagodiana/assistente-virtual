@@ -1,15 +1,22 @@
-from chatterbot.trainers import ListTrainer
 from chatterbot import ChatBot
-
+from chatterbot.trainers import ChatterBotCorpusTrainer
 
 import os
 import speech_recognition as sr 
 
-bot = ChatBot('Jarvis')
+bot = ChatBot('Floyd',
+                logic_adapters=[
+                'chatterbot.logic.BestMatch',
+                ],
+                trainer = 'chatterbot.trainers.ChatterBotCorpusTrainer'
+                )
 
-trainer = ListTrainer(bot)
+trainer = ChatterBotCorpusTrainer(bot)
 
-for _file in os.listdir('chats'):
-    lines = open('chats/' + _file, 'r').readlines()
+trainer.train(
+    "chatterbot.corpus.portuguese"
+)
 
-    trainer.train(lines)
+#for _file in os.listdir('chats'):
+#    lines = open('chats/' + _file, 'r').readlines()
+#    trainer.train(lines)

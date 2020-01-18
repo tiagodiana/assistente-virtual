@@ -7,15 +7,11 @@ import os
 import sys
 import speech_recognition as sr 
 import requests
-from images.face import reconhecimento_facial
+import face
 from googlesearch import search
-from datetime import datetime
-
-
 
 class Main():
     def __init__(self):
-        # Criando Chatbot
         self.bot = ChatBot('Floyd',
                             logic_adapters=[
                             'chatterbot.logic.BestMatch',
@@ -23,76 +19,44 @@ class Main():
                             trainer = 'chatterbot.trainers.ChatterBotCorpusTrainer'
                             )
         self.r = sr.Recognizer()
-        self.fim = None
-        self.response = None
-        if reconhecimento_facial() ==  None:
-            print("Floyd: Rosto desconhecido")
+        if face.reconhecimento_facial() ==  None:
             self.cria_audio("Rosto desconhecido")
-            print("Floyd: Encerrando o sistema")
+            print("Floyd: Rosto desconhecido")
             self.cria_audio("Encerrando o Sistema")
+            print("Floyd: Encerrando o sistema")
             sys.exit()
         else:
-            nome = reconhecimento_facial()
-            print(f"Floyd: Bem vindo {nome}")
+            nome = face.reconhecimento_facial()
             self.cria_audio("Bem vindo " + str(nome))
-            print("Floyd: No que posso ajudar?")
+            print(f"Floyd: Bem vindo {nome}")
             self.cria_audio('No que posso ajudar?')
+            print("Floyd: No que posso ajudar?")
             while True:
-                self.response = ""
+                self.response = "Estou pronto para ajudar"
+                print("Floyd: Estou pronto para ajudar")
                 self.ouvir()
-                #self.speech = str(input('Digite algo: '))
-                horas = self.speech.find('Que horas são')
-                previsao = self.speech.find('previsão do tempo')
-                noticias = self.speech.find('notícias do dia')
-                pesquisar = self.speech.find('pesquisar')
-                fim = self.speech.find('Ok obrigado')
-                if previsao == 0:
-                    cidade = str(self.speech).split()[-1]
-                    print(f"Floyd: Buscando a previsão do tempo para {cidade}")
-                    self.cria_audio('Buscando previsão do tempo para ' + cidade)
-                    self.response = self.previsaoTempo(cidade)
-                elif horas == 0:
-                    h = datetime.now().strftime("%H:%M")
-                    print(f"Floyd: Agora são {h}")
-                    self.response = 'Agora são ' + h
-                elif noticias == 0:
-                    print("Floyd: Buscando as notícias")
-                    self.cria_audio('Buscando as notícias')
-                    self.news()
-                elif pesquisar == 0:
-                    self.pesquisar()
-                elif fim == 0:
-                    print("Floyd: De nada quando precisar é só chamar")
-                    self.response = "De nada, quando precisar é só chamar"
-                else:
-                    print('Você disse: ', self.speech.capitalize())
-                    self.response = self.bot.get_response(self.speech.capitalize())
-                    if float(self.response.confidence) > 0.3:
-                        self.response = str(self.response)    
-                    else:
-                        self.response = 'Não posso responder ainda'
-                    print('Floyd: ', self.response)   
-                self.cria_audio(str(self.response))
-                if fim == 0:
-                    sys.exit()
+                self.dict_action = {'previsão do tempo': self.previsaoTempo(self.speech),'notícias':self.news(), 'ok obrigado': sys.exit()}
+                self.action = None
+                if self.speech in self.dict_action:
+                    self.action = self.action
+                self.dict_action[self.action]
+                 
+    
 
     # FUNCTION OUVIR AUDIO 
     def ouvir(self):
         with sr.Microphone() as s:
             self.r.adjust_for_ambient_noise(s)
             self.audio = self.r.listen(s)
-            try:
-                self.speech = self.r.recognize_google(self.audio, language='pt-BR')
-            except EnvironmentError:
-                self.speech = ""
-                print(EnvironmentError)
+            self.speech = self.r.recognize_google(self.audio, language='pt-BR')
+               
     # FUNCTION AUDIO CREATE
     def cria_audio(self,audio):
         # ---------------------------- pyttsx AUDIO MALE
         engine = pyttsx3.init('espeak')
         voices = engine.getProperty('voices')
         rate = engine.getProperty('rate')
-        engine.setProperty('rate', rate-50)
+        engine.setProperty('rate', rate-60)
         for voice in voices:
             if voice.name == 'brazil':
                 engine.setProperty('voice', voice.id)
@@ -112,8 +76,12 @@ class Main():
         #playsound('audios/tmp.mp3')    
         #os.remove('audios/tmp.mp3')    
     #API WEATHER
-    def previsaoTempo(self,cidade):
+    def previsaoTempo(self):
         try:
+            cidade = str(self.speech).split()[-1]
+            self.cria_audio('Buscando previsão do tempo para ' + cidade)
+            print(f"Floyd: Buscando a previsão do tempo para {cidade}")
+            self.response = self.previsaoTempo(cidade)
             url = 'https://api.hgbrasil.com/weather'
             key = '0418e7f0'
             fields= "only_results,temp,city_name,forecast,max,min,date"
@@ -148,16 +116,16 @@ class Main():
                 self.cria_audio('Fim das noticias, deseja algo mais?')
     
     def pesquisar(self):
-        print("Floyd: Diga o que deseja pesquisar")
         self.cria_audio("Diga o que deseja pesquisar")
+        print("Floyd: Diga o que deseja pesquisar")
         self.ouvir()
-        self.pesq = search(self.speech, stop=2)
+        pesq = search(self.speech, stop=2)
         for c in pesq:
             os.system(f'xdg-open {c}')
-        print("Floyd: Pesquisa finalizada ")
         self.cria_audio("Pesquisa finalizada")
-        print('Deseja mais alguma coisa?')
+        print("Floyd: Pesquisa finalizada ")
         self.cria_audio("Deseja mais alguma coisa?")
+        print('Deseja mais alguma coisa?')
 
 if __name__ == '__main__':
     inicio = Main()

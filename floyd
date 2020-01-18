@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 # Imports library
 from chatterbot import *
 import pyttsx3
