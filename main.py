@@ -19,7 +19,7 @@ class Main():
     speech = ""
     def __init__(self):
         # Dicionario com acões
-        self.dict_brain = {'Que horas são': self.hora, 'previsão do tempo': self.previsaoTempo,'notícias do dia': self.news, 'pesquisar':self.pesquisar, 'Ok obrigado': self.fim}
+        self.dict_brain = {'Que horas são': self.hora, 'previsão do tempo': self.previsaoTempo,'notícias do dia': self.news, 'pesquisar':self.pesquisar, 'Ok obrigado': self.fim, 'Que dia é hoje': self.data}
         
         # Criando Chatbot
         self.bot = ChatBot('Floyd',
@@ -103,14 +103,25 @@ class Main():
         #Da play ao audio
         #playsound('audios/tmp.mp3')    
         #os.remove('audios/tmp.mp3')    
-    #API WEATHER
+    
+    # DATA
+    def data(self,frase):
+        mes = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
+        d = datetime.now().strftime("%d ")
+        m = int(datetime.now().strftime('%m'))
+        m = mes[m -1]
+        a =  datetime.now().strftime("%Y")
+        print(f"{d} de {m} de {a}")
+        data = f"{d} de {m} de {a}"
+        self.cria_audio(data)
 
+    # HORA
     def hora(self, frase):
         h = datetime.now().strftime("%H:%M")
         print(f"Floyd: Agora são {h}")
         self.cria_audio('Agora são ' + h)
         self.principal()
-
+    #API WEATHER
     def previsaoTempo(self,frase):
         result_audio = ''
         try:
