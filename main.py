@@ -15,6 +15,8 @@ import webbrowser
 
 
 class Main():
+    response = ""
+    speech = ""
     def __init__(self):
         # Dicionario com acões
         self.dict_brain = {'Que horas são': self.hora, 'previsão do tempo': self.previsaoTempo,'notícias do dia': self.news, 'pesquisar':self.pesquisar, 'Ok obrigado': self.fim}
@@ -65,23 +67,21 @@ class Main():
             self.cria_audio(str(self.response))
     # FUNCTION OUVIR AUDIO 
     def ouvir(self):
-        try:
-            with sr.Microphone() as s:
+        with sr.Microphone() as s:
+            try:
                 self.r.adjust_for_ambient_noise(s)
                 self.audio = self.r.listen(s)
-                try:
-                    self.speech = self.r.recognize_google(self.audio, language='pt-BR')
-                except EnvironmentError:
-                    self.speech = ""
-                    print(EnvironmentError)
-        except EnvironmentError:
-            self.speech = ""
-            print(EnvironmentError)
-
+                self.speech = self.r.recognize_google(self.audio, language='pt-BR')
+            except sr.UnknownValueError:
+                self.cria_audio("Não ouvi o que você disse")
+                self.ouvir()
     # FUNCTION AUDIO CREATE
     def cria_audio(self,audio):
         # ---------------------------- pyttsx AUDIO MALE
-        engine = pyttsx3.init('espeak')
+        try:
+            engine = pyttsx3.init('sapi5')
+        except:
+            engine = pyttsx3.init('espeak')
         voices = engine.getProperty('voices')
         rate = engine.getProperty('rate')
         engine.setProperty('rate', rate-50)
@@ -137,6 +137,8 @@ class Main():
 
     # API NEWS
     def news(self, frase):
+        print("Floyd: Buscando as notícias do dia")
+        self.cria_audio("Buscando as notícias do dia")
         url = ('https://newsapi.org/v2/top-headlines?'
         'country=br&'
         'apiKey=05d5ce74721c41698d58009213297db9')
@@ -159,6 +161,8 @@ class Main():
         self.cria_audio("Diga o que deseja pesquisar")
         self.ouvir()
         p = search(self.speech, stop=2)
+        print("Floyd: Iniciando pesquisa")
+        self.cria_audio("Iniciando pesquisa")
         tmp = ''
         for c in p:
             webbrowser.open(c)
