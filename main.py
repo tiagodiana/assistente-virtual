@@ -15,11 +15,13 @@ import webbrowser
 
 
 class Main():
-    response = ""
-    speech = ""
     def __init__(self):
+        self.response = ""
+        self.speech = ""
+        self.r = ""
+        self.nome = ""
         # Dicionario com acões
-        self.dict_brain = {'Que horas são': self.hora, 'previsão do tempo': self.previsaoTempo,'notícias do dia': self.news, 'pesquisar':self.pesquisar, 'Ok obrigado': self.fim, 'Que dia é hoje': self.data}
+        self.dict_brain = {'Que horas são': self.hora, 'Que dia é hoje': self.data, 'previsão do tempo': self.previsaoTempo,'notícias do dia': self.news, 'pesquisar':self.pesquisar, 'encerrar': self.fim}
         
         # Criando Chatbot
         self.bot = ChatBot('Floyd',
@@ -36,9 +38,9 @@ class Main():
             self.cria_audio("Encerrando o Sistema")
             sys.exit()
         else:
-            nome = reconhecimento_facial()
-            print(f"Floyd: Bem vindo {nome}")
-            self.cria_audio("Bem vindo " + str(nome))
+            self.nome = reconhecimento_facial()
+            print(f"Floyd: Bem vindo {self.nome}")
+            self.cria_audio("Bem vindo " + str(self.nome))
             print("Floyd: No que posso ajudar?")
             self.cria_audio('No que posso ajudar?')
             self.status = True
@@ -47,7 +49,6 @@ class Main():
                 
     def principal(self):
         while self.status:
-            self.response = ""
             self.ouvir()
             self.status = False
             for c in self.dict_brain:
@@ -64,7 +65,7 @@ class Main():
                     self.response = 'Não posso responder ainda'
                 print('Floyd: ', self.response)  
                 self.status = True 
-            self.cria_audio(str(self.response))
+                self.cria_audio(str(self.response))
     # FUNCTION OUVIR AUDIO 
     def ouvir(self):
         with sr.Microphone() as s:
@@ -80,30 +81,27 @@ class Main():
         # ---------------------------- pyttsx AUDIO MALE
         try:
             engine = pyttsx3.init('sapi5')
+            voices = engine.getProperty('voices')
+            rate = engine.getProperty('rate')
+            engine.setProperty('rate', rate-50)
+            for voice in voices:
+                if voice.name == 'brazil':
+                    engine.setProperty('voice', voice.id)
+            engine.say(audio)
+            engine.runAndWait()
+            engine.stop()
         except:
-            engine = pyttsx3.init('espeak')
-        voices = engine.getProperty('voices')
-        rate = engine.getProperty('rate')
-        engine.setProperty('rate', rate-50)
-        for voice in voices:
-            if voice.name == 'brazil':
-                engine.setProperty('voice', voice.id)
-        engine.say(audio)
-        engine.runAndWait()
-        engine.stop()
-        # -----------------------------
         # ----------------------------- gTTS AUDIO FEMALE
-        #if audio != '':
-        #    tts = gTTS(audio,lang='pt-br')
-        #else:
-        #    tts = gTTS('Não entendi o que você disse!',lang='pt-br')
-        #    print("Floyd: Não entendi o que vocẽ disse!")
-        #Salva o arquivo de audio
-        #tts.save('audios/tmp.mp3')
-        #Da play ao audio
-        #playsound('audios/tmp.mp3')    
-        #os.remove('audios/tmp.mp3')    
-    
+            try:
+                tts = gTTS(audio,lang='pt-br')
+                #Salva o arquivo de audio
+                tts.save('audios/tmp.mp3')
+                #Da play ao audio
+                playsound('audios/tmp.mp3')    
+                os.remove('audios/tmp.mp3')    
+            except:
+                print("Erro na execução do audio")
+        
     # DATA
     def data(self,frase):
         mes = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
@@ -111,9 +109,10 @@ class Main():
         m = int(datetime.now().strftime('%m'))
         m = mes[m -1]
         a =  datetime.now().strftime("%Y")
-        print(f"{d} de {m} de {a}")
+        print(f"Floyd: {d} de {m} de {a}")
         data = f"{d} de {m} de {a}"
         self.cria_audio(data)
+        self.principal()
 
     # HORA
     def hora(self, frase):
@@ -164,7 +163,7 @@ class Main():
             print(json['articles'][c]['description'])  
             self.cria_audio(json['articles'][c]['description'])  
             if c == 0:
-                self.cria_audio('Fim das noticias, deseja algo mais?')
+                self.cria_audio('Fim das notícias, deseja algo mais?')
         self.principal()
     
     def pesquisar(self, frase):
@@ -185,8 +184,8 @@ class Main():
         self.principal()
 
     def fim(self, frase):
-        print("Floyd: De nada quando precisar é só chamar")
-        self.cria_audio("De nada, quando precisar é só chamar")
+        print("Floyd: Encerrando o sistema, quando precisar é só chamar")
+        self.cria_audio("Encerrando o sistema, quando precisar é só chamar")
         sys.exit()
 
 if __name__ == '__main__':
