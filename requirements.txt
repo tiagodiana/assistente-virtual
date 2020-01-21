@@ -7,3 +7,4 @@ playsound
 pyttsx3
 face_recognition
 opencv-python
+google
