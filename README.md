@@ -5,7 +5,7 @@
  <ul>
    <li><h4>Arch Linux</h4></li>
     <ul>
-        <li># pacman -S espeak espeakup alsa-utils cmake</li>
+        <li># pacman -S espeak espeakup alsa-utils cmake swig</li>
         <li># systemctl enable espeakup.service</li>
         <li># pip install --upgrade pyyaml</li>
         <li># pip install -r requirements.txt</li>
