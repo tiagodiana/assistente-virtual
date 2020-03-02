@@ -1,5 +1,4 @@
 speechrecognition
-pocketsphinx
 chatterbot-corpus
 chatterbot
 gTTS
@@ -8,4 +7,4 @@ pyttsx3
 face_recognition
 opencv-python
 google
-pyaudio
+
