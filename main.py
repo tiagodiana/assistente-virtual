@@ -45,7 +45,9 @@ class Main():
             self.status = True
             self.principal()
             
-                
+    #
+    # Função Principal do Programa
+    #
     def principal(self):
         while self.status:
             self.ouvir()
@@ -65,7 +67,9 @@ class Main():
                 print('Floyd: ', self.response)  
                 self.status = True 
                 self.cria_audio(str(self.response))
+    #
     # FUNCTION OUVIR AUDIO 
+    #
     def ouvir(self):
         with sr.Microphone() as s:
             try:
@@ -75,7 +79,9 @@ class Main():
             except sr.UnknownValueError:
                 self.cria_audio("Não ouvi o que você disse")
                 self.ouvir()
+    #
     # FUNCTION AUDIO CREATE
+    #
     def cria_audio(self,audio):
         # ---------------------------- pyttsx AUDIO MALE
         try:
@@ -102,8 +108,10 @@ class Main():
                 print(err)
                 print("ERRO GTTS")
                 print("Erro na execução do audio")
-        
+
+    #
     # DATA
+    #
     def data(self,frase):
         mes = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
         d = datetime.now().strftime("%d ")
@@ -113,15 +121,20 @@ class Main():
         print(f"Floyd: {d} de {m} de {a}")
         data = f"{d} de {m} de {a}"
         self.cria_audio(data)
+        self.cria_audio("Deseja algo mais?")
         self.principal()
-
+    #
     # HORA
+    #
     def hora(self, frase):
         h = datetime.now().strftime("%H:%M")
         print(f"Floyd: Agora são {h}")
         self.cria_audio('Agora são ' + h)
+        self.cria_audio("Deseja algo mais?")
         self.principal()
+    #
     #API WEATHER
+    #
     def previsaoTempo(self,frase):
         result_audio = ''
         try:
@@ -143,10 +156,12 @@ class Main():
         except:
             result_audio = "Não foi possivel obter a previsão do tempo tente mais tarde"
         self.cria_audio(result_audio)
+        self.cria_audio("Deseja algo mais?")
         self.principal()
 
-
+    #
     # API NEWS
+    #
     def news(self, frase):
         print("Floyd: Buscando as notícias do dia")
         self.cria_audio("Buscando as notícias do dia")
@@ -166,7 +181,8 @@ class Main():
 
         c = 0
         d = 0
-        while True:
+        verif = True
+        while verif:
             try:
                 if cont_news[c] not in filter_list:
                     print('Notícia ' + str(d + 1))
@@ -176,6 +192,12 @@ class Main():
                     print(json['articles'][c]['description'])  
                     self.cria_audio(json['articles'][c]['description']) 
                     d += 1
+                    self.cria_audio("Deseja ouvir mais notícias?")
+                    print("Deseja ouvir mais notícias?")
+                    self.ouvir()
+                    if self.speech == "não":
+                        self.cria_audio('Fim das notícias, deseja algo mais?')
+                        break
                 c +=1
             except:
                 self.cria_audio('Fim das notícias, deseja algo mais?')
@@ -183,7 +205,7 @@ class Main():
         self.principal()
 
 
-        # PERCORRENDO AS 10 PRIMEIRAS NOTÍCIAS
+        """ # PERCORRENDO AS 10 PRIMEIRAS NOTÍCIAS
         for c in range(1):
             print('Notícia ' + str(c + 1))
             self.cria_audio('Notícia ' +  str(c + 1))
@@ -193,7 +215,7 @@ class Main():
             self.cria_audio(json['articles'][c]['description'])  
             if c == 0:
                 self.cria_audio('Fim das notícias, deseja algo mais?')
-        self.principal()
+        self.principal() """
     
     def pesquisar(self, frase):
         print("Floyd: Diga o que deseja pesquisar")
@@ -201,7 +223,7 @@ class Main():
         self.ouvir()
         p = search(self.speech, stop=2)
         print("Floyd: Iniciando pesquisa")
-        self.cria_audio("Iniciando pesquisa")
+        self.cria_audio("Pesquisa iniciada")
         tmp = ''
         for c in p:
             webbrowser.open(c)
