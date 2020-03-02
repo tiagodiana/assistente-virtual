@@ -1,3 +1,4 @@
+setuptools
 speechrecognition
 chatterbot-corpus
 chatterbot
