@@ -5,6 +5,7 @@ chatterbot
 gTTS
 playsound
 pyttsx3
+pyaudio
 face_recognition
 opencv-python
 google

@@ -10,8 +10,23 @@ url = ('https://newsapi.org/v2/top-headlines?'
 req = requests.get(url, timeout=3000)
 json = req.json()
 
-for c in json:
-      if str(c).find('novela') == 0:
-             print('Noticia de novela achada!\n')
-    #print(json['articles'][c]['title'])
-    #print(json['articles'][c]['description'])
+filter_list = ['Meutimao.com.br', 'Colunadofla.com', 'Ofuxico.com.br', 'Sportingnews.com', 'Fogaonet.com','Cbf.com.br', 'Superesportes.com.br']
+
+cont_news = []
+
+for c in range(int(json['totalResults'])):
+    try:
+        cont_news.append(json['articles'][c]['source']['name'])
+    except:
+        break
+
+c = 0;
+while True:
+    try:
+        if cont_news[c] not in filter_list:
+            print(json['articles'][c]['source'])
+        else:
+            print("não achado")
+        c +=1
+    except:
+        break

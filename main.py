@@ -13,7 +13,6 @@ from datetime import datetime
 import webbrowser
 
 
-
 class Main():
     def __init__(self):
         self.response = ""
@@ -29,7 +28,7 @@ class Main():
                             'chatterbot.logic.BestMatch',
                             ],
                             trainer = 'chatterbot.trainers.ChatterBotCorpusTrainer'
-                            )
+                            ) 
         self.r = sr.Recognizer()
         if reconhecimento_facial() ==  None:
             print("Floyd: Rosto desconhecido")
@@ -39,7 +38,7 @@ class Main():
             sys.exit()
         else:
             self.nome = reconhecimento_facial()
-            print(f"Floyd: Bem vindo {self.nome}")
+            print(f"Floyd: Bem vindo {str(self.nome)}")
             self.cria_audio("Bem vindo " + str(self.nome))
             print("Floyd: No que posso ajudar?")
             self.cria_audio('No que posso ajudar?')
@@ -98,8 +97,10 @@ class Main():
                 tts.save('audios/tmp.mp3')
                 #Da play ao audio
                 playsound('audios/tmp.mp3')    
-                os.remove('audios/tmp.mp3')    
-            except:
+                   
+            except EnvironmentError as err:
+                print(err)
+                print("ERRO GTTS")
                 print("Erro na execução do audio")
         
     # DATA
@@ -154,6 +155,34 @@ class Main():
         'apiKey=05d5ce74721c41698d58009213297db9')
         req = requests.get(url, timeout=3000)
         json = req.json()
+        #filtrando as noticias
+        filter_list = ['Meutimao.com.br', 'Colunadofla.com', 'Ofuxico.com.br', 'Sportingnews.com', 'Fogaonet.com','Cbf.com.br', 'Superesportes.com.br']
+        cont_news = []
+        for c in range(int(json['totalResults'])):
+            try:
+                cont_news.append(json['articles'][c]['source']['name'])
+            except:
+                break
+
+        c = 0
+        d = 0
+        while True:
+            try:
+                if cont_news[c] not in filter_list:
+                    print('Notícia ' + str(d + 1))
+                    self.cria_audio('Notícia ' +  str(d + 1))
+                    print(json['articles'][c]['title'])
+                    self.cria_audio(json['articles'][c]['title'])
+                    print(json['articles'][c]['description'])  
+                    self.cria_audio(json['articles'][c]['description']) 
+                    d += 1
+                c +=1
+            except:
+                self.cria_audio('Fim das notícias, deseja algo mais?')
+                break
+        self.principal()
+
+
         # PERCORRENDO AS 10 PRIMEIRAS NOTÍCIAS
         for c in range(1):
             print('Notícia ' + str(c + 1))
